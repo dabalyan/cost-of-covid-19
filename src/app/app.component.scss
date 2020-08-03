@@ -1,0 +1,118 @@
+@import "../styles/variables";
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .main-title {
+    font-size: 2rem;
+    margin: 2rem 1rem 0;
+    text-align: center;
+
+    svg {
+      margin-right: 10px;
+    }
+  }
+
+  form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 20px;
+
+    section {
+      margin: 10px;
+    }
+
+    .input-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+
+      input {
+        min-width: 200px;
+
+        &[type="range"] {
+          flex: 1;
+        }
+
+        margin-right: 0;
+      }
+    }
+
+    .population-input {
+      width: 100%;
+
+      input[type="range"] {
+        --thumb-color: #{$success-color};
+      }
+    }
+
+    .infection-rate-input {
+      flex: 1;
+
+      input[type="range"] {
+        --thumb-color: #{$primary-color};
+      }
+    }
+
+    .mortality-rate-input {
+      flex: 1;
+
+      input[type="range"] {
+        --thumb-color: #{$danger-color};
+      }
+    }
+  }
+
+  .calculations {
+    font-size: 3rem;
+    text-align: center;
+
+    h1, h3 {
+      line-height: 1em;
+    }
+
+    .infections {
+      color: $primary-color;
+      padding: 10px 0 15px;
+      background-color: darken($nightBg, 2%);
+
+      h3 {
+        font-size: 6vw;
+      }
+    }
+
+    .deaths {
+      padding: 20px 0 30px;
+      color: $danger-color;
+      background-color: darken($nightBg, 4%);
+
+      h1 {
+        font-size: 10vw;
+      }
+    }
+  }
+
+  footer {
+    flex-grow: 1;
+    background-color: darken($nightBg, 6%);
+    padding: 20vh 5vh 5vh;
+    font-size: 1.2rem;
+    text-align: center;
+
+    a {
+      color: inherit;
+      margin: 8px 0;
+      text-decoration: underline;
+    }
+
+    .copyright-notice {
+      margin-top: 10px;
+      font-weight: 500;
+    }
+  }
+}

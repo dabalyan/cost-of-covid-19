@@ -1,0 +1,20 @@
+$dayColor: #000;
+$dayBg: #d9dedf;
+$dayShade: lighten($dayBg, 7%);
+
+$nightColor: #bebebe;
+$nightBg: #1c1f25;
+$nightShade: lighten($nightBg, 4%);
+
+$primary-color: #0172ff;
+$success-color: #00b36f;
+$danger-color: #ff6a00;
+$extra-color: #a847d6;
+
+$border-radius: 6px;
+$gutter-base: 16px;
+
+$font: 'Source Sans Pro', sans-serif;
+$monoFont: Consolas, monospace;
+$emojiFont: apple color emoji, segoe ui emoji, notocoloremoji, segoe ui symbol, android emoji,
+  emojisymbols, emojione mozilla, serif;

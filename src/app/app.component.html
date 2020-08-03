@@ -1,0 +1,58 @@
+<header>
+  <h1 class="main-title flex-centered-content">
+    <svg width="50px" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="50"/>
+    </svg> Human Cost of COVID-19
+  </h1>
+</header>
+
+<form [formGroup]="formGroup" (submit)="calculateCost($event)">
+  <section class="population-input">
+    <h3 class="color-success">Population (in millions)</h3>
+    <h4 class="color-success">{{countryMatchedWithPopulation}}</h4>
+    <div class="input-group">
+      <input type="range" min="1" max="7800" step="1" [value]="formGroup.controls.population.value"
+             formControlName="population">
+      <label class="input">
+        <input type="number" [value]="formGroup.controls.population.value" formControlName="population">
+      </label>
+    </div>
+  </section>
+
+  <section class="infection-rate-input">
+    <h3 class="color-primary">Infection Rate %</h3>
+    <div class="input-group">
+      <input type="range" min=".24" max="70" step=".01" [value]="formGroup.controls.infectionRate.value"
+             formControlName="infectionRate">
+      <label class="input">
+        <input type="number" [value]="formGroup.controls.infectionRate.value" formControlName="infectionRate">
+      </label>
+    </div>
+  </section>
+
+  <section class="mortality-rate-input">
+    <h3 class="color-danger">Mortality Rate %</h3>
+    <div class="input-group">
+      <input type="range" min=".1" max="10" step=".01" [value]="formGroup.controls.mortalityRate.value"
+             formControlName="mortalityRate">
+      <label class="input">
+        <input type="number" [value]="formGroup.controls.mortalityRate.value" formControlName="mortalityRate">
+      </label>
+    </div>
+  </section>
+</form>
+
+
+<section class="calculations">
+  <div class="infections">
+    <h3>{{infected | number}} infected</h3>
+  </div>
+  <div class="deaths">
+    <h1>{{deaths | number}} deaths</h1>
+  </div>
+</section>
+
+<footer>
+  <p class="source-link">Source Code: <a href="https://github.com/dabalyan/cost-of-covid-19">GitHub</a></p>
+  <p class="copyright-notice">Copyright © 2020 <a href="https://www.linkedin.com/in/dabalyan">Ankit Singh</a></p>
+</footer>
