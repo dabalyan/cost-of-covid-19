@@ -5,10 +5,15 @@ app-root {
   flex-direction: column;
   height: 100%;
 
+  header {
+    display: flex;
+    justify-content: center;
+  }
+
   .main-title {
     font-size: 2rem;
     margin: 2rem 1rem 0;
-    text-align: center;
+    text-align: left;
 
     svg {
       margin-right: 10px;
@@ -33,10 +38,22 @@ app-root {
       flex-wrap: wrap;
 
       input {
-        min-width: 200px;
-
         &[type="range"] {
           flex: 1;
+          min-width: 150px;
+        }
+
+        &[type="number"] {
+          min-width: 5em;
+          width: 5em;
+
+          -moz-appearance: textfield;
+
+          &::-webkit-outer-spin-button,
+          &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
         }
 
         margin-right: 0;
