@@ -1,9 +1,10 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Subject} from 'rxjs';
-import {debounceTime} from 'rxjs/operators';
-import {Cities, Continents, Countries, Regions} from './app.meta-data';
+import {Observable, Subject} from 'rxjs';
+import {debounceTime, shareReplay} from 'rxjs/operators';
+import {ajaxGetJSON} from 'rxjs/internal-compatibility';
+import {Cities, Continents, Countries, DefaultIr, DefaultMr, Million, Regions, WorldPopulation} from './app.meta-data';
 
 @Component({
   selector: 'app-root',
@@ -15,11 +16,18 @@ export class AppComponent implements OnInit {
   formGroup: FormGroup;
   infected: number;
   deaths: number;
+  chronicallyIll: number;
 
   places: { population: number, name: string, country?: string }[];
   placeMatchedWithPopulation: string;
   placeMatchedWithInfected: string;
   placeMatchedWithDeaths: string;
+
+  currentInfectionRate: number;
+  currentMortalityRate: number;
+
+  readonly latestStats = ajaxGetJSON('https://covid19api.xapix.io/v2/latest')
+    .pipe(shareReplay(1)) as Observable<{ latest: { confirmed: number, deaths: number } }>;
 
   readonly queryParamsUpdater = new Subject<{ p: number; ir: number; mr: number }>();
 
@@ -45,10 +53,13 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     const urlSearchParams = new URLSearchParams(location.search);
     this.formGroup = this.formBuilder.group({
-      population: [+urlSearchParams.get('p') || 7800],
-      infectionRate: [+urlSearchParams.get('ir') || .24],
-      mortalityRate: [+urlSearchParams.get('mr') || 3.7]
+      population: [+urlSearchParams.get('p') || WorldPopulation],
+      infectionRate: [+urlSearchParams.get('ir') || DefaultIr],
+      mortalityRate: [+urlSearchParams.get('mr') || DefaultMr]
     });
+
+
+    this.updateWithLatestData(!location.search);
 
     this.queryParamsUpdater.pipe(
       debounceTime(200)
@@ -62,16 +73,35 @@ export class AppComponent implements OnInit {
     });
   }
 
+  updateWithLatestData(updateInputParameters = true): void {
+    this.latestStats.subscribe(summary => {
+      const latestIr = +((summary?.latest?.confirmed / (WorldPopulation * Million)) * 100).toFixed(2);
+      const latestMr = +((summary?.latest?.deaths / summary?.latest?.confirmed) * 100).toFixed(2);
+
+      this.currentInfectionRate = latestIr;
+      this.currentMortalityRate = latestMr;
+
+      if (!updateInputParameters || this.formGroup.dirty) {
+        return;
+      }
+      this.formGroup.patchValue({
+        infectionRate: [isFinite(latestIr) && latestIr || DefaultIr],
+        mortalityRate: [isFinite(latestMr) && latestMr || DefaultMr]
+      });
+    });
+  }
+
   calculateCost(event?: Event): void {
     if (event) {
       event.preventDefault();
     }
 
     const {population: {value: p}, infectionRate: {value: ir}, mortalityRate: {value: mr}} = this.formGroup.controls;
-    this.infected = Math.round(1000000 * p * ir / 100);
+    this.infected = Math.round(Million * p * ir / 100);
     this.deaths = Math.round(this.infected * mr / 100);
+    this.chronicallyIll = Math.round(this.infected * 12 / 100);
 
-    this.matchCountriesWithFigure(1000000 * p, this.infected, this.deaths);
+    this.matchCountriesWithFigure(Million * p, this.infected, this.deaths);
     this.queryParamsUpdater.next({p, ir, mr});
   }
 

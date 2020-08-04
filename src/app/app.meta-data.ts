@@ -1,5 +1,10 @@
 // sourced from https://worldpopulationreview.com/
 
+export const Million = 1000000;
+export const WorldPopulation = 7800; // in millions
+export const DefaultIr = .23; // %
+export const DefaultMr = 3.79; // %
+
 export const Countries = [
   {name: 'World', population: 7800000000},
   {name: 'China', population: 1439323776},

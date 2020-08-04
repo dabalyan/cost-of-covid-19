@@ -23,9 +23,11 @@
   </section>
 
   <section class="infection-rate-input">
-    <h3 class="color-primary">Infection Rate %</h3>
+    <h3 class="color-primary">Infection Rate (%)</h3>
+    <h4 class="color-primary" *ngIf="currentInfectionRate">{{currentInfectionRate}}% is actual</h4>
+    <h4 *ngIf="!currentInfectionRate">&nbsp;</h4>
     <div class="input-group">
-      <input type="range" min=".24" max="70" step=".01" [value]="formGroup.controls.infectionRate.value"
+      <input type="range" min=".1" max="70" step=".01" [value]="formGroup.controls.infectionRate.value"
              formControlName="infectionRate">
       <label class="input">
         <input type="number" [value]="formGroup.controls.infectionRate.value" formControlName="infectionRate">
@@ -34,7 +36,9 @@
   </section>
 
   <section class="mortality-rate-input">
-    <h3 class="color-danger">Mortality Rate %</h3>
+    <h3 class="color-danger">Mortality Rate (%)</h3>
+    <h4 class="color-danger" *ngIf="currentMortalityRate">{{currentMortalityRate}}% is actual</h4>
+    <h4 *ngIf="!currentMortalityRate">&nbsp;</h4>
     <div class="input-group">
       <input type="range" min=".1" max="10" step=".01" [value]="formGroup.controls.mortalityRate.value"
              formControlName="mortalityRate">
@@ -48,16 +52,43 @@
 
 <section class="calculations">
   <div class="infections">
-    <h3>{{infected | number}} infected</h3>
+    <h3>{{infected | number}} <small>infected</small></h3>
     <h6>equal to {{placeMatchedWithInfected}}</h6>
   </div>
   <div class="deaths">
-    <h1>{{deaths | number}} deaths</h1>
+    <h1>{{deaths | number}} <small>deaths</small></h1>
     <h6>equal to {{placeMatchedWithDeaths}}</h6>
+  </div>
+  <div class="chronically-ill">
+    <h3>{{chronicallyIll | number}} <small class="white-space-nowrap">chronically-ill</small></h3>
+    <h6>
+      about <a
+      href="https://www.sciencemag.org/news/2020/07/brain-fog-heart-damage-covid-19-s-lingering-problems-alarm-scientists">12%</a>
+      of infected people develop chronic illness,
+    </h6>
+    <h6>
+      read more about long-term effects <a
+      href="https://www.vox.com/2020/5/8/21251899/coronavirus-long-term-effects-symptoms">here</a>
+    </h6>
   </div>
 </section>
 
 <footer>
+  <p>
+    * This is not a tracker! Only purpose of this tool is estimation (based on user input).
+  </p>
+  <p>
+    ** Some calculations might not exactly match with the source due to rounding.
+  </p>
+  <p>
+    *** I'm not affiliated to any referenced-source, health or news organization.
+  </p>
+  <p>
+    **** The meta-data is sourced from
+    <a href="https://worldpopulationreview.com/">here</a>,
+    <a href="https://www.vox.com/2020/5/8/21251899/coronavirus-long-term-effects-symptoms">here</a>, and
+    <a href="https://www.xapix.io/covid-19-initiative">here</a>.
+  </p>
   <p class="source-link">Source Code: <a href="https://github.com/dabalyan/cost-of-covid-19">GitHub</a></p>
   <p class="copyright-notice">Copyright © 2020 <a href="https://www.linkedin.com/in/dabalyan">Ankit Singh</a></p>
 </footer>

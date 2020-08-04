@@ -83,6 +83,10 @@ app-root {
     align-items: center;
     font-size: 3rem;
 
+    a {
+      color: $primary-color;
+    }
+
     h1, h3 {
       line-height: 1em;
     }
@@ -95,6 +99,9 @@ app-root {
 
     .infections {
       color: $primary-color;
+    }
+
+    .infections, .chronically-ill {
       padding: 2vh;
       background-color: darken($nightBg, 2%);
 
@@ -117,7 +124,7 @@ app-root {
   footer {
     flex-grow: 1;
     background-color: darken($nightBg, 6%);
-    padding: 20vh 5vh 5vh;
+    padding: 15vh 5vh 5vh;
     font-size: 1.2rem;
     text-align: center;
 
@@ -125,6 +132,10 @@ app-root {
       color: inherit;
       margin: 8px 0;
       text-decoration: underline;
+    }
+
+    .source-link {
+      margin-top: 3rem;
     }
 
     .copyright-notice {
