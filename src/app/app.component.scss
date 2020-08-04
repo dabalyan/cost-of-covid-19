@@ -8,16 +8,8 @@ app-root {
   header {
     display: flex;
     justify-content: center;
-  }
-
-  .main-title {
-    font-size: 2rem;
-    margin: 2rem 1rem 0;
-    text-align: left;
-
-    svg {
-      margin-right: 10px;
-    }
+    background-color: darken($nightBg, 6%);
+    padding: 1rem;
   }
 
   form {

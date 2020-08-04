@@ -90,7 +90,7 @@ export class AppComponent implements OnInit {
     });
 
     if (matchedPlace) {
-      return matchedPlace.name
+      return `population of ${matchedPlace.name}`
         + (matchedPlace.country ? `, ${matchedPlace.country}` : '');
     }
 
@@ -100,7 +100,7 @@ export class AppComponent implements OnInit {
     }) || world;
 
     const percentagePopulation = Math.round(population / closestMatchedPlace.population * 100);
-    return `${percentagePopulation}% of ${closestMatchedPlace.name}`
+    return `${percentagePopulation}% population of ${closestMatchedPlace.name}`
       + (closestMatchedPlace.country ? `, ${closestMatchedPlace.country}` : '');
   }
 }
