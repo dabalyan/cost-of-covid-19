@@ -24,7 +24,6 @@ export const Countries = [
   {name: 'Canada', population: 37742154},
   {name: 'Saudi Arabia', population: 34813871},
   {name: 'Malaysia', population: 32365999},
-  {name: 'Nepal', population: 29136808},
   {name: 'North Korea', population: 25778816},
   {name: 'Australia', population: 25499884},
   {name: 'Taiwan', population: 23816775},
@@ -46,14 +45,9 @@ export const Countries = [
   {name: 'Norway', population: 5421241},
   {name: 'Ireland', population: 4937786},
   {name: 'New Zealand', population: 4822233},
-  {name: 'Mauritius', population: 1271768},
   {name: 'Luxembourg', population: 625978},
   {name: 'Iceland', population: 341243},
-  {name: 'Isle of Man', population: 85033},
-  {name: 'Cayman Islands', population: 65722},
-  {name: 'Bermuda', population: 62278},
   {name: 'Greenland', population: 56770},
-  {name: 'British Virgin Islands', population: 30231},
   {name: 'Vatican City', population: 801}
 ];
 
