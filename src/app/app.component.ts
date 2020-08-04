@@ -1,6 +1,9 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {CountryWisePopulation} from './app.meta-data';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subject} from 'rxjs';
+import {debounceTime} from 'rxjs/operators';
+import {Cities, Countries} from './app.meta-data';
 
 @Component({
   selector: 'app-root',
@@ -13,12 +16,22 @@ export class AppComponent implements OnInit {
   infected: number;
   deaths: number;
 
-  countryWisePopulation: { population: number, name: string }[];
-  countryMatchedWithPopulation: string;
+  places: { population: number, name: string, country?: string }[];
+  placeMatchedWithPopulation: string;
+  placeMatchedWithInfected: string;
+  placeMatchedWithDeaths: string;
 
-  constructor(private formBuilder: FormBuilder) {
-    this.countryWisePopulation = CountryWisePopulation.sort((countryA,
-                                                             countryB) => {
+  readonly queryParamsUpdater = new Subject<{ p: number; ir: number; mr: number }>();
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    this.places = Countries.concat(Cities).sort((
+      countryA,
+      countryB
+    ) => {
       if (countryA.population > countryB.population) {
         return 1;
       }
@@ -30,20 +43,22 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const urlSearchParams = new URLSearchParams(location.search);
     this.formGroup = this.formBuilder.group({
-      population: [7800],
-      infectionRate: [.24],
-      mortalityRate: [3.7]
+      population: [+urlSearchParams.get('p') || 7800],
+      infectionRate: [+urlSearchParams.get('ir') || .24],
+      mortalityRate: [+urlSearchParams.get('mr') || 3.7]
+    });
+
+    this.queryParamsUpdater.pipe(
+      debounceTime(200)
+    ).subscribe((queryParams) => {
+      this.router.navigate([], {queryParams, replaceUrl: true});
     });
 
     this.calculateCost();
     this.formGroup.valueChanges.subscribe(() => {
       this.calculateCost();
-    });
-
-    this.matchCountryWithPopulation();
-    this.formGroup.get('population').valueChanges.subscribe(() => {
-      this.matchCountryWithPopulation();
     });
   }
 
@@ -52,31 +67,40 @@ export class AppComponent implements OnInit {
       event.preventDefault();
     }
 
-    const {population: {value: p}, infectionRate: {value: ir}, mortalityRate: {value: dr}} = this.formGroup.controls;
+    const {population: {value: p}, infectionRate: {value: ir}, mortalityRate: {value: mr}} = this.formGroup.controls;
     this.infected = Math.round(1000000 * p * ir / 100);
-    this.deaths = Math.round(this.infected * dr / 100);
+    this.deaths = Math.round(this.infected * mr / 100);
+
+    this.matchCountriesWithFigure(1000000 * p, this.infected, this.deaths);
+    this.queryParamsUpdater.next({p, ir, mr});
   }
 
-  matchCountryWithPopulation(): void {
-    const {population: {value}} = this.formGroup.controls;
-    const population = value * 1000000;
+  matchCountriesWithFigure(population: number, infected: number, deaths: number): void {
+    this.placeMatchedWithPopulation = this.matchPlaceWithPopulation(population);
+    this.placeMatchedWithInfected = this.matchPlaceWithPopulation(infected);
+    this.placeMatchedWithDeaths = this.matchPlaceWithPopulation(deaths);
+  }
+
+  matchPlaceWithPopulation(population: number): string {
     const populationLowBound = population - population / 100; // 1%
     const populationHighBound = population + population / 100; // 1%
 
-    const matchedCountry = this.countryWisePopulation.find(country => {
-      return country.population >= populationLowBound && country.population < populationHighBound;
+    const matchedPlace = this.places.find(place => {
+      return place.population >= populationLowBound && place.population < populationHighBound;
     });
 
-    if (matchedCountry) {
-      this.countryMatchedWithPopulation = matchedCountry.name;
-    } else {
-      const world = this.countryWisePopulation[this.countryWisePopulation.length - 1];
-      const closestMatchedCountry = this.countryWisePopulation.find((country, index) => {
-        return population < country.population;
-      }) || world;
-
-      const percentagePopulation = Math.round(population / closestMatchedCountry.population * 100);
-      this.countryMatchedWithPopulation = `${percentagePopulation}% of ${closestMatchedCountry.name}`;
+    if (matchedPlace) {
+      return matchedPlace.name
+        + (matchedPlace.country ? `, ${matchedPlace.country}` : '');
     }
+
+    const world = this.places[this.places.length - 1];
+    const closestMatchedPlace = this.places.find(place => {
+      return population < place.population;
+    }) || world;
+
+    const percentagePopulation = Math.round(population / closestMatchedPlace.population * 100);
+    return `${percentagePopulation}% of ${closestMatchedPlace.name}`
+      + (closestMatchedPlace.country ? `, ${closestMatchedPlace.country}` : '');
   }
 }

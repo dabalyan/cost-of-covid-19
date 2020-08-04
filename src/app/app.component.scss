@@ -69,30 +69,38 @@ app-root {
   }
 
   .calculations {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     font-size: 3rem;
-    text-align: center;
 
     h1, h3 {
       line-height: 1em;
     }
 
+    h6 {
+      text-align: left;
+      font-size: .4em;
+      margin-top: .5em;
+    }
+
     .infections {
       color: $primary-color;
-      padding: 10px 0 15px;
+      padding: 2vh;
       background-color: darken($nightBg, 2%);
 
       h3 {
-        font-size: 6vw;
+        font-size: max(2.5rem, 6vw);
       }
     }
 
     .deaths {
-      padding: 20px 0 30px;
+      padding: 3vh;
       color: $danger-color;
       background-color: darken($nightBg, 4%);
 
       h1 {
-        font-size: 10vw;
+        font-size: max(3.5rem, 10vw);
       }
     }
   }
