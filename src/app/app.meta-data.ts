@@ -89,3 +89,33 @@ export const Cities = [
   {name: 'Geneva', country: 'Switzerland', population: 613373},
   {name: 'Kansas City', country: 'United States', population: 505198}
 ];
+
+export const Regions = [
+  {
+    name: 'Eastern Asia',
+    population: 1678089619
+  },
+  {
+    name: 'Western Europe',
+    population: 196146316
+  }
+];
+
+export const Continents = [
+  {
+    name: 'Eurasia',
+    population: 5388690801
+  },
+  {
+    name: 'Asia',
+    population: 4641054775
+  },
+  {
+    name: 'Europe',
+    population: 747636026
+  },
+  {
+    name: 'North America',
+    population: 368869647
+  }
+];

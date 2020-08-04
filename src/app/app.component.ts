@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Subject} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
-import {Cities, Countries} from './app.meta-data';
+import {Cities, Continents, Countries, Regions} from './app.meta-data';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router
   ) {
-    this.places = Countries.concat(Cities).sort((
+    this.places = Countries.concat(Cities).concat(Regions).concat(Continents).sort((
       countryA,
       countryB
     ) => {
