@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
 import {debounceTime, shareReplay} from 'rxjs/operators';
 import {ajaxGetJSON} from 'rxjs/internal-compatibility';
-import {DefaultIr, DefaultMr, Million, PlacesSortedByName, PlacesSortedByPopulation, WorldPopulation} from './app.meta-data';
+import {DefaultIr, DefaultMr, Events, Million, PlacesSortedByName, PlacesSortedByPopulation, WorldPopulation} from './app.meta-data';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +26,7 @@ export class AppComponent implements OnInit {
   placeMatchedWithPopulation: string;
   placeMatchedWithInfected: string;
   placeMatchedWithDeaths: string;
+  eventMatchedWithDeaths: string;
 
   currentInfectionRate: number;
   currentMortalityRate: number;
@@ -105,6 +106,7 @@ export class AppComponent implements OnInit {
     this.placeMatchedWithPopulation = this.matchPlaceWithPopulation(population);
     this.placeMatchedWithInfected = this.matchPlaceWithPopulation(infected);
     this.placeMatchedWithDeaths = this.matchPlaceWithPopulation(deaths);
+    this.eventMatchedWithDeaths = this.matchEventWithFatalities(deaths);
   }
 
   matchPlaceWithPopulation(population: number): string {
@@ -132,6 +134,27 @@ export class AppComponent implements OnInit {
     const percentagePopulation = Math.round(population / closestMatchedPlace.population * 100);
     return `${percentagePopulation}% population of ${closestMatchedPlace.name}`
       + (closestMatchedPlace.country ? `, ${closestMatchedPlace.country}` : '');
+  }
+
+  matchEventWithFatalities(loss: number): string {
+    const lossLowBound = loss - loss / 100; // 1%
+    const lossHighBound = loss + loss / 100; // 1%
+
+    const matchedEvent = Events.find(event => {
+      return event.loss >= lossLowBound && event.loss < lossHighBound;
+    });
+
+    if (matchedEvent) {
+      return `fatalities of ${matchedEvent.name}`;
+    }
+
+    const eventWithMostLoss = Events[Events.length - 1];
+    const closestMatchedEvent = Events.find(event => {
+      return loss < event.loss;
+    }) || eventWithMostLoss;
+
+    const percentagePopulation = Math.round(loss / closestMatchedEvent.loss * 100);
+    return `${percentagePopulation}% fatalities of ${closestMatchedEvent.name}`;
   }
 
   onPopulationSelectorChange(population): void {

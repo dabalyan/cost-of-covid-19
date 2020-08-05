@@ -94,34 +94,46 @@ export const Cities = [
 ];
 
 export const Regions = [
-  {
-    name: 'Eastern Asia',
-    population: 1678089619
-  },
-  {
-    name: 'Western Europe',
-    population: 196146316
-  }
+  {name: 'Eastern Asia', population: 1678089619},
+  {name: 'Western Europe', population: 196146316}
 ];
 
 export const Continents = [
-  {
-    name: 'Eurasia',
-    population: 5388690801
-  },
-  {
-    name: 'Asia',
-    population: 4641054775
-  },
-  {
-    name: 'Europe',
-    population: 747636026
-  },
-  {
-    name: 'North America',
-    population: 368869647
-  }
+  {name: 'Eurasia', population: 5388690801},
+  {name: 'Asia', population: 4641054775},
+  {name: 'Europe', population: 747636026},
+  {name: 'North America', population: 368869647}
 ];
+
+// https://en.wikipedia.org/wiki/List_of_wars_and_anthropogenic_disasters_by_death_toll
+export const Events = [
+  {name: 'Both World Wars', loss: 90000000},
+  {name: 'Second World War', loss: 70000000},
+  {name: 'British Rule in India', loss: 60000000},
+  {name: 'Muslim Conquests in Indian Subcontinent', loss: 41000000},
+  {name: 'European colonization of the Americas', loss: 34047026},
+  {name: 'First World War', loss: 20000000},
+  {name: 'Indian Rebellion of 1857', loss: 2828427},
+  {name: 'Vietnam War', loss: 2383000},
+  {name: 'French Revolution', loss: 1000000},
+  {name: 'US-Iraq War', loss: 364500},
+  {name: '2004 Tsunami', loss: 227898},
+  {name: 'Atomic bombings of Hiroshima and Nagasaki', loss: 177000},
+  {name: 'Atomic bombings of Hiroshima', loss: 118000},
+  {name: 'Atomic bombings of Nagasaki', loss: 59500},
+  {name: '9/11', loss: 2977},
+].sort((
+  eventA,
+  eventB
+) => {
+  if (eventA.loss > eventB.loss) {
+    return 1;
+  }
+  if (eventA.loss < eventB.loss) {
+    return -1;
+  }
+  return 0;
+});
 
 export const PlacesSortedByName = Countries.concat(Cities).concat(Regions).concat(Continents).sort((
   placeA,

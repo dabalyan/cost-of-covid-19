@@ -7,9 +7,14 @@ app-root {
 
   header {
     display: flex;
+    align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
     background-color: darken($nightBg, 6%);
-    padding: 1rem;
+
+    section {
+      margin: 1rem;
+    }
   }
 
   form {
