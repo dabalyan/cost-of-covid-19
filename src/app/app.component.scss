@@ -21,6 +21,25 @@ app-root {
 
     section {
       margin: 10px;
+      min-width: 300px;
+    }
+
+    select, button {
+      outline: none;
+      border: 1px solid;
+      border-radius: 5px;
+      font-size: .8em;
+      margin-left: 10px;
+      color: inherit;
+    }
+
+    select {
+      width: 7em;
+
+      &, option {
+        background-color: $nightBg;
+        color: inherit;
+      }
     }
 
     .input-group {

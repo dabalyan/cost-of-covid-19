@@ -70,8 +70,6 @@ export const Cities = [
   {name: 'Seoul', country: 'South Korea', population: 9963452},
   {name: 'London', country: 'United Kingdom', population: 9304016},
   {name: 'New York', country: 'United States', population: 8323340},
-  {name: 'Hong Kong', population: 7547652},
-  {name: 'Singapore', country: 'Singapore', population: 5935053},
   {name: 'Rome', country: 'Italy', population: 4257056},
   {name: 'Los Angeles', country: 'United States', population: 4015940},
   {name: 'Berlin', country: 'Germany', population: 3562038},
@@ -124,3 +122,21 @@ export const Continents = [
     population: 368869647
   }
 ];
+
+export const PlacesSortedByName = Countries.concat(Cities).concat(Regions).concat(Continents).sort((
+  placeA,
+  placeB
+) => placeA.name.localeCompare(placeB.name));
+
+export const PlacesSortedByPopulation = Countries.concat(Cities).concat(Regions).concat(Continents).sort((
+  placeA,
+  placeB
+) => {
+  if (placeA.population > placeB.population) {
+    return 1;
+  }
+  if (placeA.population < placeB.population) {
+    return -1;
+  }
+  return 0;
+});

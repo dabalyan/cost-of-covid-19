@@ -1,10 +1,10 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable, Subject} from 'rxjs';
 import {debounceTime, shareReplay} from 'rxjs/operators';
 import {ajaxGetJSON} from 'rxjs/internal-compatibility';
-import {Cities, Continents, Countries, DefaultIr, DefaultMr, Million, Regions, WorldPopulation} from './app.meta-data';
+import {DefaultIr, DefaultMr, Million, PlacesSortedByName, PlacesSortedByPopulation, WorldPopulation} from './app.meta-data';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +18,11 @@ export class AppComponent implements OnInit {
   deaths: number;
   chronicallyIll: number;
 
-  places: { population: number, name: string, country?: string }[];
+  @ViewChild('populationSelector')
+  readonly populationSelector: ElementRef<HTMLSelectElement>;
+
+  readonly placesByPopulation: { population: number, name: string, country?: string }[] = PlacesSortedByPopulation;
+  readonly placesByName: { population: number, name: string, country?: string }[] = PlacesSortedByName;
   placeMatchedWithPopulation: string;
   placeMatchedWithInfected: string;
   placeMatchedWithDeaths: string;
@@ -36,18 +40,6 @@ export class AppComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router
   ) {
-    this.places = Countries.concat(Cities).concat(Regions).concat(Continents).sort((
-      countryA,
-      countryB
-    ) => {
-      if (countryA.population > countryB.population) {
-        return 1;
-      }
-      if (countryA.population < countryB.population) {
-        return -1;
-      }
-      return 0;
-    });
   }
 
   ngOnInit(): void {
@@ -70,6 +62,10 @@ export class AppComponent implements OnInit {
     this.calculateCost();
     this.formGroup.valueChanges.subscribe(() => {
       this.calculateCost();
+    });
+
+    this.formGroup.controls.population.valueChanges.subscribe(() => {
+      this.updatePopulationSelector();
     });
   }
 
@@ -112,11 +108,15 @@ export class AppComponent implements OnInit {
   }
 
   matchPlaceWithPopulation(population: number): string {
+    const precisionMatch = this.placesByPopulation.find(place => {
+      return this.populationPrecision(place.population) === this.populationPrecision(population);
+    });
+
     const populationLowBound = population - population / 100; // 1%
     const populationHighBound = population + population / 100; // 1%
 
-    const matchedPlace = this.places.find(place => {
-      return place.population >= populationLowBound && place.population < populationHighBound;
+    const matchedPlace = precisionMatch || this.placesByPopulation.find(place => {
+      return place.population >= populationLowBound && place.population < populationHighBound; // find a match within 1% levy
     });
 
     if (matchedPlace) {
@@ -124,13 +124,33 @@ export class AppComponent implements OnInit {
         + (matchedPlace.country ? `, ${matchedPlace.country}` : '');
     }
 
-    const world = this.places[this.places.length - 1];
-    const closestMatchedPlace = this.places.find(place => {
+    const world = this.placesByPopulation[this.placesByPopulation.length - 1];
+    const closestMatchedPlace = this.placesByPopulation.find(place => {
       return population < place.population;
     }) || world;
 
     const percentagePopulation = Math.round(population / closestMatchedPlace.population * 100);
     return `${percentagePopulation}% population of ${closestMatchedPlace.name}`
       + (closestMatchedPlace.country ? `, ${closestMatchedPlace.country}` : '');
+  }
+
+  onPopulationSelectorChange(population): void {
+    this.formGroup.controls.population.patchValue(this.populationPrecision(population));
+  }
+
+  updatePopulationSelector(): void {
+    const selectorElement = this.populationSelector?.nativeElement;
+    const populationValue = this.formGroup.controls.population.value;
+
+    if (
+      selectorElement.value !== '' &&
+      this.populationPrecision(+selectorElement?.value) !== populationValue
+    ) {
+      selectorElement.value = '';
+    }
+  }
+
+  populationPrecision(population: number): number {
+    return +(population / Million).toFixed(3);
   }
 }

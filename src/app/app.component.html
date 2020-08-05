@@ -11,7 +11,15 @@
 
 <form [formGroup]="formGroup" (submit)="calculateCost($event)">
   <section class="population-input">
-    <h3 class="color-success">Population (in millions)</h3>
+    <h3 class="color-success flex align-items-center">
+      <span>Population (in millions)</span>
+      <select #populationSelector ngModel
+              (ngModelChange)="onPopulationSelectorChange($event)"
+              [ngModelOptions]="{standalone: true}">
+        <option value="">Select</option>
+        <option *ngFor="let place of placesByName" [value]="place.population">{{place.name}}</option>
+      </select>
+    </h3>
     <h4 class="color-success">{{placeMatchedWithPopulation}}</h4>
     <div class="input-group">
       <input type="range" min="1" max="7800" step="1" [value]="formGroup.controls.population.value"
@@ -23,8 +31,18 @@
   </section>
 
   <section class="infection-rate-input">
-    <h3 class="color-primary">Infection Rate (%)</h3>
-    <h4 class="color-primary" *ngIf="currentInfectionRate">{{currentInfectionRate}}% is actual</h4>
+    <h3 class="color-primary flex align-items-center">
+      <span>Infection Rate (%)</span>
+      <button *ngIf="currentInfectionRate && currentInfectionRate != formGroup.controls.infectionRate.value"
+              (click)="formGroup.controls.infectionRate.patchValue(currentInfectionRate)">
+        reset
+      </button>
+      <button *ngIf="70 != formGroup.controls.infectionRate.value"
+              (click)="formGroup.controls.infectionRate.patchValue(70)">
+        herd-immunity
+      </button>
+    </h3>
+    <h4 class="color-primary" *ngIf="currentInfectionRate">{{currentInfectionRate}}% is current world avg.</h4>
     <h4 *ngIf="!currentInfectionRate">&nbsp;</h4>
     <div class="input-group">
       <input type="range" min=".1" max="70" step=".01" [value]="formGroup.controls.infectionRate.value"
@@ -36,8 +54,14 @@
   </section>
 
   <section class="mortality-rate-input">
-    <h3 class="color-danger">Mortality Rate (%)</h3>
-    <h4 class="color-danger" *ngIf="currentMortalityRate">{{currentMortalityRate}}% is actual</h4>
+    <h3 class="color-danger flex align-items-center">
+      <span>Mortality Rate (%)</span>
+      <button *ngIf="currentMortalityRate && currentMortalityRate != formGroup.controls.mortalityRate.value"
+              (click)="formGroup.controls.mortalityRate.patchValue(currentMortalityRate)">
+        reset
+      </button>
+    </h3>
+    <h4 class="color-danger" *ngIf="currentMortalityRate">{{currentMortalityRate}}% is current world avg.</h4>
     <h4 *ngIf="!currentMortalityRate">&nbsp;</h4>
     <div class="input-group">
       <input type="range" min=".1" max="10" step=".01" [value]="formGroup.controls.mortalityRate.value"
